@@ -17,7 +17,6 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -35,34 +34,39 @@ function Login() {
 
       console.log("LOGIN RESPONSE:", response.data);
 
-      // Save JWT token
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
+      if (!response.data.success) {
+        setError(response.data.message || "Login failed");
+        return;
       }
 
-      // Save user information
-      if (response.data.user) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify(response.data.user)
-        );
-      }
+      // Save token
+      localStorage.setItem("token", response.data.token);
 
-      // Verify token was saved
+      // Save user
+      localStorage.setItem(
+        "user",
+        JSON.stringify(response.data.user)
+      );
+
       console.log(
-        "TOKEN SAVED:",
+        "TOKEN:",
         localStorage.getItem("token")
       );
 
-      // Go to buyer dashboard
-      window.location.href = "/buyer/dashboard";
+      console.log(
+        "USER:",
+        localStorage.getItem("user")
+      );
+
+      // Go to dashboard
+      navigate("/buyer/dashboard", { replace: true });
 
     } catch (error) {
       console.error("LOGIN ERROR:", error);
 
       setError(
         error.response?.data?.message ||
-          "Login failed. Please check your email and password."
+        "Login failed. Please check your email and password."
       );
     } finally {
       setLoading(false);
@@ -72,9 +76,7 @@ function Login() {
   return (
     <Container
       maxWidth="sm"
-      sx={{
-        py: 8,
-      }}
+      sx={{ py: 8 }}
     >
       <Card
         sx={{
