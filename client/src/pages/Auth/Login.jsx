@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Card,
@@ -6,6 +6,7 @@ import {
   Typography,
   TextField,
   Button,
+  Box,
   Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -32,27 +34,32 @@ function Login() {
         password,
       });
 
-      console.log("LOGIN RESPONSE:", response.data);
-
-      // Save login information
+      // Save JWT token
       localStorage.setItem(
         "token",
         response.data.token
       );
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user)
-      );
+      // Save user information
+      if (response.data.user) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify(response.data.user)
+        );
+      }
 
-      // Go to marketplace after successful login
-      navigate("/buyer/marketplace");
+      // Go to dashboard
+      navigate("/buyer/dashboard");
+
+      // Reload so Navbar immediately detects login
+      window.location.reload();
+
     } catch (error) {
-      console.error("LOGIN ERROR:", error);
+      console.error(error);
 
       setError(
         error.response?.data?.message ||
-          "Login failed"
+          "Login failed. Please check your email and password."
       );
     } finally {
       setLoading(false);
@@ -62,14 +69,18 @@ function Login() {
   return (
     <Container
       maxWidth="sm"
-      sx={{ mt: 8 }}
+      sx={{
+        py: 8,
+      }}
     >
       <Card>
-        <CardContent>
+        <CardContent sx={{ p: 4 }}>
+
           <Typography
             variant="h4"
             fontWeight="bold"
-            sx={{ mb: 3 }}
+            textAlign="center"
+            sx={{ mb: 4 }}
           >
             Login
           </Typography>
@@ -77,48 +88,73 @@ function Login() {
           {error && (
             <Alert
               severity="error"
-              sx={{ mb: 2 }}
+              sx={{ mb: 3 }}
             >
               {error}
             </Alert>
           )}
 
-          <form onSubmit={handleLogin}>
+          <Box
+            component="form"
+            onSubmit={handleLogin}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+
             <TextField
               label="Email"
               type="email"
-              fullWidth
-              margin="normal"
               value={email}
               onChange={(e) =>
                 setEmail(e.target.value)
               }
+              required
+              fullWidth
             />
 
             <TextField
               label="Password"
               type="password"
-              fullWidth
-              margin="normal"
               value={password}
               onChange={(e) =>
                 setPassword(e.target.value)
               }
+              required
+              fullWidth
             />
 
             <Button
               type="submit"
               variant="contained"
-              fullWidth
               size="large"
-              sx={{ mt: 3 }}
               disabled={loading}
             >
-              {loading
-                ? "Logging in..."
-                : "Login"}
+              {loading ? "Logging in..." : "Login"}
             </Button>
-          </form>
+
+            <Button
+              variant="text"
+              onClick={() =>
+                navigate("/register")
+              }
+            >
+              Don't have an account? Register
+            </Button>
+
+            <Button
+              variant="text"
+              onClick={() =>
+                navigate("/forgot-password")
+              }
+            >
+              Forgot Password?
+            </Button>
+
+          </Box>
+
         </CardContent>
       </Card>
     </Container>

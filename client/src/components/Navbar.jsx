@@ -1,15 +1,11 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-} from "@mui/material";
-
+import React from "react";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -19,107 +15,74 @@ function Navbar() {
   };
 
   return (
-    <AppBar
-      position="static"
-      elevation={2}
-      sx={{
-        backgroundColor: "white",
-        color: "#111",
-      }}
-    >
-      <Toolbar
-        sx={{
-          minHeight: "82px",
-          px: {
-            xs: 2,
-            md: 4,
-          },
-        }}
-      >
-        {/* LOGO */}
+    <AppBar position="static">
+      <Toolbar>
+
+        {/* Website Name */}
         <Typography
-          variant="h4"
+          variant="h6"
           sx={{
-            fontWeight: "bold",
-            color: "#1976d2",
-            cursor: "pointer",
             flexGrow: 1,
+            cursor: "pointer",
+            fontWeight: "bold",
           }}
           onClick={() => navigate("/")}
         >
-          TextileHub
+          Textile Marketplace
         </Typography>
 
-        {/* NAVIGATION */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
+        <Box sx={{ display: "flex", gap: 1 }}>
+
+          {/* Always visible */}
           <Button
-            sx={{
-              color: "#111",
-              fontSize: "1rem",
-            }}
+            color="inherit"
             onClick={() => navigate("/")}
           >
-            HOME
+            Home
           </Button>
 
-          <Button
-            sx={{
-              color: "#111",
-              fontSize: "1rem",
-            }}
-            onClick={() =>
-              navigate("/buyer/marketplace")
-            }
-          >
-            MARKETPLACE
-          </Button>
+          {/* NOT LOGGED IN */}
+          {!token && (
+            <>
+              <Button
+                color="inherit"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </Button>
 
-          <Button
-            sx={{
-              color: "#111",
-              fontSize: "1rem",
-            }}
-            onClick={() =>
-              navigate("/supplier/dashboard")
-            }
-          >
-            SUPPLIERS
-          </Button>
+              <Button
+                color="inherit"
+                onClick={() => navigate("/register")}
+              >
+                Register
+              </Button>
+            </>
+          )}
 
+          {/* LOGGED IN */}
+          {token && (
+            <>
+              <Button
+                color="inherit"
+                onClick={() =>
+                  navigate("/buyer/dashboard")
+                }
+              >
+                Dashboard
+              </Button>
 
-          {/* LOGIN */}
-          <Button
-            variant="outlined"
-            sx={{
-              ml: 2,
-              color: "#1976d2",
-              borderColor: "#90caf9",
-              fontSize: "1rem",
-              px: 2,
-            }}
-            onClick={() => navigate("/login")}
-          >
-            LOGIN
-          </Button>
+              <Button
+                color="inherit"
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </>
+          )}
 
-          {/* REGISTER */}
-          <Button
-            variant="contained"
-            sx={{
-              fontSize: "1rem",
-              px: 2,
-            }}
-            onClick={() => navigate("/register")}
-          >
-            REGISTER
-          </Button>
         </Box>
+
       </Toolbar>
     </AppBar>
   );
