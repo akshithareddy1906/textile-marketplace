@@ -6,29 +6,22 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [isLoggedIn, setIsLoggedIn] = useState(
-    !!localStorage.getItem("token")
+    Boolean(localStorage.getItem("token"))
   );
 
   useEffect(() => {
     const checkLogin = () => {
-      setIsLoggedIn(!!localStorage.getItem("token"));
+      setIsLoggedIn(Boolean(localStorage.getItem("token")));
     };
 
     checkLogin();
-
-    window.addEventListener("storage", checkLogin);
-
-    return () => {
-      window.removeEventListener("storage", checkLogin);
-    };
-  }, [location]);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -45,18 +38,15 @@ function Navbar() {
       sx={{
         backgroundColor: "#ffffff",
         color: "#111111",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
       }}
     >
       <Toolbar
         sx={{
-          maxWidth: "1400px",
-          width: "100%",
-          margin: "0 auto",
           minHeight: "80px",
+          px: { xs: 2, md: 8 },
         }}
       >
-
         {/* LOGO */}
         <Typography
           variant="h4"
@@ -71,103 +61,99 @@ function Navbar() {
           TextileHub
         </Typography>
 
-        {/* NAVIGATION */}
-        <Box
+        {/* HOME */}
+        <Button
+          color="inherit"
+          onClick={() => navigate("/")}
           sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
+            fontSize: "18px",
+            mx: 1,
           }}
         >
+          HOME
+        </Button>
 
-          {/* HOME */}
-          <Button
-            color="inherit"
-            onClick={() => navigate("/")}
-            sx={{
-              fontSize: "18px",
-            }}
-          >
-            HOME
-          </Button>
+        {/* MARKETPLACE */}
+        <Button
+          color="inherit"
+          onClick={() => navigate("/buyer/marketplace")}
+          sx={{
+            fontSize: "18px",
+            mx: 1,
+          }}
+        >
+          MARKETPLACE
+        </Button>
 
-          {/* MARKETPLACE */}
-          <Button
-            color="inherit"
-            onClick={() => navigate("/buyer/marketplace")}
-            sx={{
-              fontSize: "18px",
-            }}
-          >
-            MARKETPLACE
-          </Button>
+        {/* SUPPLIERS */}
+        <Button
+          color="inherit"
+          onClick={() => navigate("/supplier/dashboard")}
+          sx={{
+            fontSize: "18px",
+            mx: 1,
+          }}
+        >
+          SUPPLIERS
+        </Button>
 
-          {/* SUPPLIERS */}
-          <Button
-            color="inherit"
-            onClick={() => navigate("/supplier/dashboard")}
-            sx={{
-              fontSize: "18px",
-            }}
-          >
-            SUPPLIERS
-          </Button>
+        {/* LOGGED OUT */}
+        {!isLoggedIn && (
+          <>
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/login")}
+              sx={{
+                fontSize: "18px",
+                ml: 2,
+                px: 2,
+              }}
+            >
+              LOGIN
+            </Button>
 
-          {/* NOT LOGGED IN */}
-          {!isLoggedIn && (
-            <>
-              <Button
-                variant="outlined"
-                onClick={() => navigate("/login")}
-                sx={{
-                  fontSize: "18px",
-                  px: 2,
-                }}
-              >
-                LOGIN
-              </Button>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/register")}
+              sx={{
+                fontSize: "18px",
+                ml: 1,
+                px: 2,
+              }}
+            >
+              REGISTER
+            </Button>
+          </>
+        )}
 
-              <Button
-                variant="contained"
-                onClick={() => navigate("/register")}
-                sx={{
-                  fontSize: "18px",
-                  px: 2,
-                }}
-              >
-                REGISTER
-              </Button>
-            </>
-          )}
+        {/* LOGGED IN */}
+        {isLoggedIn && (
+          <>
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/buyer/dashboard")}
+              sx={{
+                fontSize: "18px",
+                ml: 2,
+                px: 2,
+              }}
+            >
+              DASHBOARD
+            </Button>
 
-          {/* LOGGED IN */}
-          {isLoggedIn && (
-            <>
-              <Button
-                variant="outlined"
-                onClick={() => navigate("/buyer/dashboard")}
-                sx={{
-                  fontSize: "18px",
-                  px: 2,
-                }}
-              >
-                DASHBOARD
-              </Button>
-
-              <Button
-                variant="contained"
-                onClick={handleLogout}
-                sx={{
-                  fontSize: "18px",
-                  px: 2,
-                }}
-              >
-                LOGOUT
-              </Button>
-            </>
-          )}
-
-        </Box>
+            <Button
+              variant="contained"
+              onClick={handleLogout}
+              sx={{
+                fontSize: "18px",
+                ml: 1,
+                px: 2,
+              }}
+            >
+              LOGOUT
+            </Button>
+          </>
+        )}
       </Toolbar>
     </AppBar>
   );
