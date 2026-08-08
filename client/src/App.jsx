@@ -1,5 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 
+// Navbar
+import Navbar from "./components/Navbar";
+
 // Landing Page
 import Home from "./pages/Landing/Home";
 
@@ -15,6 +18,8 @@ import ProductDetails from "./pages/Buyer/ProductDetails";
 import Cart from "./pages/Buyer/Cart";
 import Wishlist from "./pages/Buyer/Wishlist";
 import Orders from "./pages/Buyer/Orders";
+
+// Checkout
 import Checkout from "./pages/Buyer/Checkout";
 
 // Supplier Pages
@@ -23,21 +28,31 @@ import SupplierProducts from "./pages/Supplier/Products";
 import AddProduct from "./pages/Supplier/AddProduct";
 import SupplierOrders from "./pages/Supplier/Orders";
 
-// Components
-import Navbar from "./components/Navbar";
-
 function App() {
   return (
     <>
-      {/* Main Navigation */}
+      {/* Navbar */}
       <Navbar />
 
       <Routes>
-        {/* Landing */}
-        <Route path="/" element={<Home />} />
 
-        {/* Authentication */}
-        <Route path="/login" element={<Login />} />
+        {/* ========================= */}
+        {/* LANDING PAGE */}
+        {/* ========================= */}
+
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
+        {/* ========================= */}
+        {/* AUTHENTICATION */}
+        {/* ========================= */}
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
         <Route
           path="/register"
@@ -49,7 +64,10 @@ function App() {
           element={<ForgotPassword />}
         />
 
-        {/* Buyer */}
+        {/* ========================= */}
+        {/* BUYER */}
+        {/* ========================= */}
+
         <Route
           path="/buyer/dashboard"
           element={<Dashboard />}
@@ -76,16 +94,19 @@ function App() {
         />
 
         <Route
-          path="/buyer/orders"
-          element={<Orders />}
-        />
-
-        <Route
           path="/buyer/checkout"
           element={<Checkout />}
         />
 
-        {/* Supplier */}
+        <Route
+          path="/buyer/orders"
+          element={<Orders />}
+        />
+
+        {/* ========================= */}
+        {/* SUPPLIER */}
+        {/* ========================= */}
+
         <Route
           path="/supplier/dashboard"
           element={<SupplierDashboard />}
@@ -105,6 +126,7 @@ function App() {
           path="/supplier/orders"
           element={<SupplierOrders />}
         />
+
       </Routes>
     </>
   );

@@ -10,7 +10,6 @@ import {
   Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
 import API from "../../api/axios";
 
 function Login() {
@@ -34,11 +33,12 @@ function Login() {
         password,
       });
 
+      console.log("LOGIN RESPONSE:", response.data);
+
       // Save JWT token
-      localStorage.setItem(
-        "token",
-        response.data.token
-      );
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
 
       // Save user information
       if (response.data.user) {
@@ -48,14 +48,17 @@ function Login() {
         );
       }
 
-      // Go to dashboard
-      navigate("/buyer/dashboard");
+      // Verify token was saved
+      console.log(
+        "TOKEN SAVED:",
+        localStorage.getItem("token")
+      );
 
-      // Reload so Navbar immediately detects login
-      window.location.reload();
+      // Go to buyer dashboard
+      window.location.href = "/buyer/dashboard";
 
     } catch (error) {
-      console.error(error);
+      console.error("LOGIN ERROR:", error);
 
       setError(
         error.response?.data?.message ||
@@ -73,7 +76,12 @@ function Login() {
         py: 8,
       }}
     >
-      <Card>
+      <Card
+        sx={{
+          borderRadius: 3,
+          boxShadow: 4,
+        }}
+      >
         <CardContent sx={{ p: 4 }}>
 
           <Typography
@@ -131,20 +139,24 @@ function Login() {
               variant="contained"
               size="large"
               disabled={loading}
+              sx={{
+                mt: 1,
+                py: 1.5,
+              }}
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Logging in..." : "LOGIN"}
             </Button>
 
             <Button
+              type="button"
               variant="text"
-              onClick={() =>
-                navigate("/register")
-              }
+              onClick={() => navigate("/register")}
             >
               Don't have an account? Register
             </Button>
 
             <Button
+              type="button"
               variant="text"
               onClick={() =>
                 navigate("/forgot-password")
