@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   Container,
   Card,
@@ -9,7 +10,9 @@ import {
   Box,
   Alert,
 } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
+
 import API from "../../api/axios";
 
 function Login() {
@@ -17,6 +20,7 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,46 +31,91 @@ function Login() {
     setLoading(true);
 
     try {
+      console.log("LOGIN STARTED");
+
       const response = await API.post("/auth/login", {
-        email,
-        password,
+        email: email.trim(),
+        password: password,
       });
 
-      console.log("LOGIN RESPONSE:", response.data);
+      console.log(
+        "FULL LOGIN RESPONSE:",
+        response.data
+      );
+
+      console.log(
+        "TOKEN FROM BACKEND:",
+        response.data.token
+      );
 
       if (!response.data.success) {
-        setError(response.data.message || "Login failed");
+        setError(
+          response.data.message || "Login failed"
+        );
         return;
       }
 
-      // Save token
-      localStorage.setItem("token", response.data.token);
+      if (!response.data.token) {
+        setError(
+          "Login successful, but no token was received."
+        );
+        return;
+      }
 
-      // Save user
+      // Save JWT token
       localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user)
+        "token",
+        response.data.token
       );
 
-      console.log(
-        "TOKEN:",
-        localStorage.getItem("token")
-      );
+      // Save user information
+      if (response.data.user) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify(response.data.user)
+        );
+      }
+
+      // Verify token
+      const savedToken =
+        localStorage.getItem("token");
 
       console.log(
-        "USER:",
-        localStorage.getItem("user")
+        "TOKEN AFTER SAVING:",
+        savedToken
+      );
+
+      if (!savedToken) {
+        setError(
+          "Token could not be saved."
+        );
+        return;
+      }
+
+      // Tell Navbar that login happened
+      window.dispatchEvent(
+        new Event("authChanged")
       );
 
       // Go to dashboard
-      navigate("/buyer/dashboard", { replace: true });
+      navigate("/buyer/dashboard", {
+        replace: true,
+      });
 
     } catch (error) {
-      console.error("LOGIN ERROR:", error);
+      console.error(
+        "LOGIN ERROR:",
+        error
+      );
+
+      console.error(
+        "SERVER RESPONSE:",
+        error.response?.data
+      );
 
       setError(
         error.response?.data?.message ||
-        "Login failed. Please check your email and password."
+          "Login failed. Please check your email and password."
       );
     } finally {
       setLoading(false);
@@ -76,7 +125,9 @@ function Login() {
   return (
     <Container
       maxWidth="sm"
-      sx={{ py: 8 }}
+      sx={{
+        py: 8,
+      }}
     >
       <Card
         sx={{
@@ -84,13 +135,18 @@ function Login() {
           boxShadow: 4,
         }}
       >
-        <CardContent sx={{ p: 4 }}>
-
+        <CardContent
+          sx={{
+            p: 4,
+          }}
+        >
           <Typography
             variant="h4"
             fontWeight="bold"
             textAlign="center"
-            sx={{ mb: 4 }}
+            sx={{
+              mb: 4,
+            }}
           >
             Login
           </Typography>
@@ -98,7 +154,9 @@ function Login() {
           {error && (
             <Alert
               severity="error"
-              sx={{ mb: 3 }}
+              sx={{
+                mb: 3,
+              }}
             >
               {error}
             </Alert>
@@ -113,7 +171,6 @@ function Login() {
               gap: 2,
             }}
           >
-
             <TextField
               label="Email"
               type="email"
@@ -146,13 +203,17 @@ function Login() {
                 py: 1.5,
               }}
             >
-              {loading ? "Logging in..." : "LOGIN"}
+              {loading
+                ? "Logging in..."
+                : "LOGIN"}
             </Button>
 
             <Button
               type="button"
               variant="text"
-              onClick={() => navigate("/register")}
+              onClick={() =>
+                navigate("/register")
+              }
             >
               Don't have an account? Register
             </Button>
@@ -166,9 +227,7 @@ function Login() {
             >
               Forgot Password?
             </Button>
-
           </Box>
-
         </CardContent>
       </Card>
     </Container>

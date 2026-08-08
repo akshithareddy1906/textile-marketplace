@@ -18,8 +18,6 @@ import ProductDetails from "./pages/Buyer/ProductDetails";
 import Cart from "./pages/Buyer/Cart";
 import Wishlist from "./pages/Buyer/Wishlist";
 import Orders from "./pages/Buyer/Orders";
-
-// Checkout
 import Checkout from "./pages/Buyer/Checkout";
 
 // Supplier Pages
@@ -31,24 +29,18 @@ import SupplierOrders from "./pages/Supplier/Orders";
 function App() {
   return (
     <>
-      {/* Navbar */}
+      {/* ONLY ONE NAVBAR */}
       <Navbar />
 
       <Routes>
 
-        {/* ========================= */}
-        {/* LANDING PAGE */}
-        {/* ========================= */}
-
+        {/* LANDING */}
         <Route
           path="/"
           element={<Home />}
         />
 
-        {/* ========================= */}
         {/* AUTHENTICATION */}
-        {/* ========================= */}
-
         <Route
           path="/login"
           element={<Login />}
@@ -64,10 +56,7 @@ function App() {
           element={<ForgotPassword />}
         />
 
-        {/* ========================= */}
         {/* BUYER */}
-        {/* ========================= */}
-
         <Route
           path="/buyer/dashboard"
           element={<Dashboard />}
@@ -103,10 +92,7 @@ function App() {
           element={<Orders />}
         />
 
-        {/* ========================= */}
         {/* SUPPLIER */}
-        {/* ========================= */}
-
         <Route
           path="/supplier/dashboard"
           element={<SupplierDashboard />}

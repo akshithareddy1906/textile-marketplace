@@ -1,23 +1,19 @@
-import { Box } from "@mui/material";
-import Navbar from "../components/Common/Navbar";
-import Footer from "../components/Common/Footer";
+import React from "react";
+import { Box, Container } from "@mui/material";
 
 function BuyerLayout({ children }) {
   return (
-    <>
-      <Navbar />
-
-      <Box
-        sx={{
-          minHeight: "80vh",
-          p: 4,
-        }}
-      >
+    <Box
+      sx={{
+        minHeight: "calc(100vh - 64px)",
+        backgroundColor: "#15161b",
+        py: 4,
+      }}
+    >
+      <Container maxWidth="xl">
         {children}
-      </Box>
-
-      <Footer />
-    </>
+      </Container>
+    </Box>
   );
 }
 

@@ -11,25 +11,47 @@ import { useNavigate } from "react-router-dom";
 function Navbar() {
   const navigate = useNavigate();
 
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    Boolean(localStorage.getItem("token"))
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check whether user is logged in
+  const checkLoginStatus = () => {
+    const token = localStorage.getItem("token");
+
+    console.log("Navbar token:", token);
+
+    setIsLoggedIn(Boolean(token));
+  };
 
   useEffect(() => {
-    const checkLogin = () => {
-      setIsLoggedIn(Boolean(localStorage.getItem("token")));
-    };
+    // Check when Navbar loads
+    checkLoginStatus();
 
-    checkLogin();
+    // Listen for login/logout
+    window.addEventListener(
+      "authChanged",
+      checkLoginStatus
+    );
+
+    return () => {
+      window.removeEventListener(
+        "authChanged",
+        checkLoginStatus
+      );
+    };
   }, []);
 
+  // Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     setIsLoggedIn(false);
 
-    navigate("/login");
+    window.dispatchEvent(
+      new Event("authChanged")
+    );
+
+    navigate("/");
   };
 
   return (
@@ -37,123 +59,117 @@ function Navbar() {
       position="static"
       sx={{
         backgroundColor: "#ffffff",
-        color: "#111111",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+        color: "#000000",
+        boxShadow: 2,
       }}
     >
       <Toolbar
         sx={{
-          minHeight: "80px",
-          px: { xs: 2, md: 8 },
+          display: "flex",
+          justifyContent: "space-between",
+          px: { xs: 2, md: 6 },
         }}
       >
         {/* LOGO */}
         <Typography
-          variant="h4"
+          variant="h5"
+          onClick={() => navigate("/")}
           sx={{
-            flexGrow: 1,
             fontWeight: "bold",
             color: "#1976d2",
             cursor: "pointer",
           }}
-          onClick={() => navigate("/")}
         >
           TextileHub
         </Typography>
 
-        {/* HOME */}
-        <Button
-          color="inherit"
-          onClick={() => navigate("/")}
+        {/* NAVIGATION */}
+        <Box
           sx={{
-            fontSize: "18px",
-            mx: 1,
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
           }}
         >
-          HOME
-        </Button>
+          {/* HOME */}
+          <Button
+            color="inherit"
+            onClick={() => navigate("/")}
+          >
+            HOME
+          </Button>
 
-        {/* MARKETPLACE */}
-        <Button
-          color="inherit"
-          onClick={() => navigate("/buyer/marketplace")}
-          sx={{
-            fontSize: "18px",
-            mx: 1,
-          }}
-        >
-          MARKETPLACE
-        </Button>
+          {/* MARKETPLACE */}
+          <Button
+            color="inherit"
+            onClick={() =>
+              navigate("/buyer/marketplace")
+            }
+          >
+            MARKETPLACE
+          </Button>
 
-        {/* SUPPLIERS */}
-        <Button
-          color="inherit"
-          onClick={() => navigate("/supplier/dashboard")}
-          sx={{
-            fontSize: "18px",
-            mx: 1,
-          }}
-        >
-          SUPPLIERS
-        </Button>
+          {/* SUPPLIERS */}
+          <Button
+            color="inherit"
+            onClick={() =>
+              navigate("/supplier/dashboard")
+            }
+          >
+            SUPPLIERS
+          </Button>
 
-        {/* LOGGED OUT */}
-        {!isLoggedIn && (
-          <>
-            <Button
-              variant="outlined"
-              onClick={() => navigate("/login")}
-              sx={{
-                fontSize: "18px",
-                ml: 2,
-                px: 2,
-              }}
-            >
-              LOGIN
-            </Button>
+          {/* NOT LOGGED IN */}
+          {!isLoggedIn && (
+            <>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  navigate("/login")
+                }
+                sx={{
+                  ml: 1,
+                }}
+              >
+                LOGIN
+              </Button>
 
-            <Button
-              variant="contained"
-              onClick={() => navigate("/register")}
-              sx={{
-                fontSize: "18px",
-                ml: 1,
-                px: 2,
-              }}
-            >
-              REGISTER
-            </Button>
-          </>
-        )}
+              <Button
+                variant="contained"
+                onClick={() =>
+                  navigate("/register")
+                }
+              >
+                REGISTER
+              </Button>
+            </>
+          )}
 
-        {/* LOGGED IN */}
-        {isLoggedIn && (
-          <>
-            <Button
-              variant="outlined"
-              onClick={() => navigate("/buyer/dashboard")}
-              sx={{
-                fontSize: "18px",
-                ml: 2,
-                px: 2,
-              }}
-            >
-              DASHBOARD
-            </Button>
+          {/* LOGGED IN */}
+          {isLoggedIn && (
+            <>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  navigate("/buyer/dashboard")
+                }
+                sx={{
+                  ml: 1,
+                }}
+              >
+                DASHBOARD
+              </Button>
 
-            <Button
-              variant="contained"
-              onClick={handleLogout}
-              sx={{
-                fontSize: "18px",
-                ml: 1,
-                px: 2,
-              }}
-            >
-              LOGOUT
-            </Button>
-          </>
-        )}
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleLogout}
+              >
+                LOGOUT
+              </Button>
+            </>
+          )}
+        </Box>
       </Toolbar>
     </AppBar>
   );
