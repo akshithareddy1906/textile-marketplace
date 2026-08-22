@@ -3,7 +3,7 @@
 > A full-stack digital marketplace connecting textile buyers and suppliers through a modern, scalable web application.
 
 <p align="center">
-  <a href="https://textile-marketplace-143hzv81s-lead-desk-mini.vercel.app/r">
+  <a href="https://textile-marketplace-nu.vercel.app/">
     <strong>🌐 Live Demo</strong>
   </a>
   &nbsp;&nbsp;•&nbsp;&nbsp;
